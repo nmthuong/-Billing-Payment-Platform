@@ -1,0 +1,88 @@
+group InvoiceItemSqlDao: EntitySqlDao;
+
+tableName() ::= "invoice_items"
+
+tableFields(prefix) ::= <<
+  <prefix>type
+, <prefix>invoice_id
+, <prefix>account_id
+, <prefix>child_account_id
+, <prefix>bundle_id
+, <prefix>subscription_id
+, <prefix>description
+, <prefix>plan_name
+, <prefix>phase_name
+, <prefix>usage_name
+, <prefix>start_date
+, <prefix>end_date
+, <prefix>amount
+, <prefix>rate
+, <prefix>currency
+, <prefix>linked_item_id
+, <prefix>created_by
+, <prefix>created_date
+>>
+
+tableValues() ::= <<
+  :type
+, :invoiceId
+, :accountId
+, :childAccountId
+, :bundleId
+, :subscriptionId
+, :description
+, :planName
+, :phaseName
+, :usageName
+, :startDate
+, :endDate
+, :amount
+, :rate
+, :currency
+, :linkedItemId
+, :createdBy
+, :createdDate
+>>
+
+
+getInvoiceItemsByInvoice() ::= <<
+  SELECT <allTableFields()>
+  FROM <tableName()>
+  WHERE invoice_id = :invoiceId
+  <AND_CHECK_TENANT()>
+  ;
+>>
+
+getInvoiceItemsBySubscription() ::= <<
+  SELECT <allTableFields()>
+  FROM <tableName()>
+  WHERE subscription_id = :subscriptionId
+  <AND_CHECK_TENANT()>
+  ;
+>>
+
+getAdjustedOrRepairedInvoiceItemsByLinkedId() ::= <<
+  SELECT <allTableFields()>
+  FROM <tableName()>
+  WHERE linked_item_id = :linkedItemId
+  AND type IN ('ITEM_ADJ', 'REPAIR_ADJ')
+  <AND_CHECK_TENANT()>
+  ;
+>>
+
+updateAmount() ::= <<
+    UPDATE <tableName()>
+    SET amount = :amount
+    WHERE id = :id
+    <AND_CHECK_TENANT()>;
+>>
+
+getInvoiceItemsByParentInvoice() ::= <<
+  SELECT <allTableFields(("items."))>
+  FROM <tableName()> items
+  INNER JOIN invoice_parent_children invRel ON invRel.child_invoice_id = items.invoice_id
+  WHERE invRel.parent_invoice_id = :parentInvoiceId
+  <AND_CHECK_TENANT("items.")>
+  <defaultOrderBy()>
+  ;
+>>

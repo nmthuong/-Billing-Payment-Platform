@@ -1,0 +1,46 @@
+group AccountEmailSqlDao: EntitySqlDao;
+
+tableName() ::= "account_emails"
+
+historyTableName() ::= "account_email_history"
+
+andCheckSoftDeletionWithComma(prefix) ::= "and <prefix>is_active"
+
+tableFields(prefix) ::= <<
+  account_id
+, email
+, is_active
+, created_by
+, created_date
+, updated_by
+, updated_date
+>>
+
+
+tableValues() ::= <<
+  :accountId
+, :email
+, :isActive
+, :createdBy
+, :createdDate
+, :updatedBy
+, :updatedDate
+ >>
+
+getEmailByAccountId() ::= <<
+select
+  <allTableFields("t.")>
+from <tableName()> t
+where t.account_id = :accountId
+and t.is_active
+<AND_CHECK_TENANT("t.")>
+;
+>>
+
+markEmailAsDeleted() ::= <<
+update <tableName()>
+set is_active = false
+where <idField("")> = :id
+<AND_CHECK_TENANT("")>
+;
+>>

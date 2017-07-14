@@ -1,0 +1,112 @@
+group EventSqlDao: EntitySqlDao;
+
+tableName() ::= "subscription_events"
+
+andCheckSoftDeletionWithComma(prefix) ::= "and <prefix>is_active"
+
+extraTableFieldsWithComma(prefix) ::= <<
+, <prefix>record_id as total_ordering
+>>
+
+defaultOrderBy(prefix) ::= <<
+order by <prefix>effective_date ASC, <recordIdField(prefix)> ASC
+>>
+
+
+tableFields(prefix) ::= <<
+  <prefix> event_type
+, <prefix> user_type
+, <prefix> effective_date
+, <prefix> subscription_id
+, <prefix> plan_name
+, <prefix> phase_name
+, <prefix> price_list_name
+, <prefix> billing_cycle_day_local
+, <prefix> is_active
+, <prefix> created_by
+, <prefix> created_date
+, <prefix> updated_by
+, <prefix> updated_date
+>>
+
+tableValues() ::= <<
+  :eventType
+, :userType
+, :effectiveDate
+, :subscriptionId
+, :planName
+, :phaseName
+, :priceListName
+, :billingCycleDayLocal
+, :isActive
+, :createdBy
+, :createdDate
+, :updatedBy
+, :updatedDate
+>>
+
+unactiveEvent() ::= <<
+update <tableName()>
+set
+is_active = false
+, updated_by = :createdBy
+, updated_date = :updatedDate
+where
+id = :id
+<AND_CHECK_TENANT()>
+;
+>>
+
+getFutureActiveEventForSubscription() ::= <<
+select <allTableFields()>
+, record_id as total_ordering
+from <tableName()>
+where
+subscription_id = :subscriptionId
+and is_active = true
+and effective_date > :now
+<AND_CHECK_TENANT()>
+<defaultOrderBy()>
+;
+>>
+
+
+getFutureOrPresentActiveEventForSubscription() ::= <<
+select <allTableFields()>
+, record_id as total_ordering
+from <tableName()>
+where
+subscription_id = :subscriptionId
+and is_active = true
+and effective_date >= :now
+<AND_CHECK_TENANT()>
+<defaultOrderBy()>
+;
+>>
+
+getEventsForSubscription() ::= <<
+select <allTableFields()>
+, record_id as total_ordering
+from <tableName()>
+where
+subscription_id = :subscriptionId
+and is_active = true
+<AND_CHECK_TENANT()>
+<defaultOrderBy()>
+;
+>>
+
+getFutureActiveEventsForAccount() ::= <<
+select <allTableFields()>
+, record_id as total_ordering
+from <tableName()>
+where
+account_record_id = :accountRecordId
+and is_active = true
+and effective_date > :now
+<AND_CHECK_TENANT()>
+<defaultOrderBy()>
+;
+>>
+
+

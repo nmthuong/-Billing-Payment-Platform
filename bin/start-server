@@ -1,0 +1,99 @@
+#! /usr/bin/env bash
+
+###################################################################################
+#                                                                                 #
+#                   Copyright 2010-2011 Ning, Inc.                                #
+#                                                                                 #
+#      Ning licenses this file to you under the Apache License, version 2.0       #
+#      (the "License"); you may not use this file except in compliance with the   #
+#      License.  You may obtain a copy of the License at:                         #
+#                                                                                 #
+#          http://www.apache.org/licenses/LICENSE-2.0                             #
+#                                                                                 #
+#      Unless required by applicable law or agreed to in writing, software        #
+#      distributed under the License is distributed on an "AS IS" BASIS, WITHOUT  #
+#      WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the  #
+#      License for the specific language governing permissions and limitations    #
+#      under the License.                                                         #
+#                                                                                 #
+###################################################################################
+
+
+HERE=`cd \`dirname $0\`; pwd`
+TOP=$HERE/..
+# Assume killbill profile by default for now
+SERVER=$TOP/profiles/killbill
+
+PROPERTIES=${PROPERTIES-"$SERVER/src/main/resources/killbill-server.properties"}
+
+DEBUG_OPTS_ECLIPSE=" -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=12345 "
+DEBUG_OPTS_ECLIPSE_WAIT=" -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=12345 "
+
+# Default JVM settings if unset
+MAVEN_OPTS=${MAVEN_OPTS-"-Duser.timezone=GMT -Dorg.killbill.server.http.gzip=true -Xms512m -Xmx1024m -XX:MaxPermSize=512m -XX:MaxDirectMemorySize=512m -XX:+UseConcMarkSweepGC"}
+
+LOG="$SERVER/src/main/resources/logback.xml"
+LOG_DIR="$SERVER/logs"
+
+HOSTNAME=`hostname`
+
+# From Argument Options
+PORT=8080
+JMX_PORT=8989
+START=
+DEBUG=
+WAIT_DEBUGGER=
+
+
+function usage() {
+    echo -n "./start-server "
+    echo -n " -s (start server)"
+    echo -n " -d (debugger turned on)"
+    echo -n " -w (along with -d, wait for debugger before starting)"
+    echo -n " -p <port_number> default 8080"
+    echo -n " -j <jmx port_number> default 8989"
+    echo -n " -l <log_dir> default $SERVER/logs"
+    echo -n "-h this message"
+    exit 1
+}
+
+function start() {
+    mkdir -p $LOG_DIR
+
+    local start_cmd="mvn -Dcom.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize=true -Dorg.killbill.server.properties=file://$PROPERTIES -Dlogback.configurationFile=$LOG jetty:run"
+
+    local debug_opts_eclipse=
+    if [ ! -z $DEBUG ]; then
+        if  [ ! -z $WAIT_DEBUGGER ]; then
+            debug_opts_eclipse=$DEBUG_OPTS_ECLIPSE_WAIT
+        else
+            debug_opts_eclipse=$DEBUG_OPTS_ECLIPSE
+        fi
+    fi
+    export MAVEN_OPTS="$MAVEN_OPTS $debug_opts_eclipse -Dorg.killbill.queue.creator.name="$HOSTNAME-"$PORT -Djetty.port=$PORT -Dcom.sun.management.jmxremote.port=$JMX_PORT -Dcom.sun.management.jmxremote=true -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false"
+
+    echo "Starting IRS MAVEN_OPTS = $MAVEN_OPTS"
+    echo "$start_cmd"
+    cd $SERVER
+    $start_cmd
+}
+
+
+while getopts ":p:j:l:swdh" options; do
+  case $options in
+	s ) START=1;;
+	d ) DEBUG=1;;
+	w ) WAIT_DEBUGGER=1;;
+	p ) PORT=$OPTARG;;
+	j ) JMX_PORT=$OPTARG;;
+	l ) LOG_DIR=$OPTARG;;
+    h ) usage;;
+    * ) usage;;
+  esac
+done
+
+if [ ! -z $START ]; then
+    start
+else
+    usage
+fi

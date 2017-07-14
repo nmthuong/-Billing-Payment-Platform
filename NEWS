@@ -1,0 +1,368 @@
+0.18.1
+    See https://github.com/killbill/killbill/releases/tag/killbill-0.18.1
+
+0.18.0
+    See https://github.com/killbill/killbill/releases/tag/killbill-0.18.0
+
+0.17.8
+    See https://github.com/killbill/killbill/releases/tag/killbill-0.17.8
+
+0.17.7
+    See https://github.com/killbill/killbill/releases/tag/killbill-0.17.7
+
+0.17.6
+    See https://github.com/killbill/killbill/releases/tag/killbill-0.17.6
+
+0.17.5
+    See https://github.com/killbill/killbill/releases/tag/killbill-0.17.5
+
+0.17.4
+    See https://github.com/killbill/killbill/releases/tag/killbill-0.17.4
+
+0.17.3
+    See https://github.com/killbill/killbill/releases/tag/killbill-0.17.3
+
+0.17.2
+    See https://github.com/killbill/killbill/releases/tag/killbill-0.17.2
+
+0.17.1
+    See https://github.com/killbill/killbill/releases/tag/killbill-0.17.1
+
+0.17.0
+    See https://github.com/killbill/killbill/releases/tag/killbill-0.17.0
+
+0.16.12
+    See https://github.com/killbill/killbill/releases/tag/killbill-0.16.12
+
+0.16.11
+    See https://github.com/killbill/killbill/releases/tag/killbill-0.16.11
+
+0.16.10
+    See https://github.com/killbill/killbill/releases/tag/killbill-0.16.10
+
+0.16.9
+    Fix issues with payment transaction external keys (make sure transaction external keys aren't shared across payments)
+    Fix #613
+
+0.16.8
+    See https://github.com/killbill/killbill/releases/tag/killbill-0.16.8
+
+0.16.7
+    See https://github.com/killbill/killbill/releases/tag/killbill-0.16.7
+
+0.16.6
+    See https://github.com/killbill/killbill/releases/tag/killbill-0.16.6
+
+0.16.5
+    See https://github.com/killbill/killbill/releases/tag/killbill-0.16.5
+
+0.16.4
+    See https://github.com/killbill/killbill/releases/tag/killbill-0.16.4
+
+0.16.3
+    See https://github.com/killbill/killbill/releases/tag/killbill-0.16.3
+
+0.16.2
+    See https://github.com/killbill/killbill/releases/tag/killbill-0.16.2
+
+0.16.1
+    See https://github.com/killbill/killbill/releases/tag/killbill-0.16.1
+
+0.16.0
+    See https://github.com/killbill/killbill/releases/tag/killbill-0.16.0
+
+0.15.10
+    See https://github.com/killbill/killbill/releases/tag/killbill-0.15.10
+
+0.15.7
+    See https://github.com/killbill/killbill/releases/tag/killbill-0.15.7
+
+0.15.6
+    See https://github.com/killbill/killbill/releases/tag/killbill-0.15.6
+
+0.15.5
+    Fix with issue with payment combo call where default account fields are not part of the request
+
+0.15.4
+    See https://github.com/killbill/killbill/issues?q=milestone%3ARelease-0.15.4+is%3Aclosed
+
+0.15.3
+    Release for milestone 0.15.3: https://github.com/killbill/killbill/issues?q=is%3Aissue+milestone%3ARelease-0.15.3+is%3Aclosed
+
+0.15.2
+    See https://github.com/killbill/killbill/issues?q=milestone%3ARelease-0.15.2+is%3Aclosed
+
+0.15.1
+    See https://github.com/killbill/killbill/issues?q=milestone%3ARelease-0.15.1+is%3Aclosed
+    Also Add new support for entitlement plugin API
+
+0.15.0
+    See https://github.com/killbill/killbill/issues?q=milestone%3ARelease-0.15.0+is%3Aclosed
+
+0.14.1
+    Fix usage bug (see 8511f41cdf78bd1cb9d0c335ffa8d40ca53aeccd)
+
+0.14.0
+    http://killbill.io/blog/kill-bill-0-14-0-released/
+
+0.13.7
+    https://github.com/killbill/killbill/issues/249
+    https://github.com/killbill/killbill/issues/297
+    https://github.com/killbill/killbill/issues/298
+    https://github.com/killbill/killbill/issues/299
+    NPE fix in DefaultPaymentApi#getPaymentMethodById
+    Update killbill-oss-parent to 0.11
+
+0.13.6
+    See https://github.com/killbill/killbill/issues?utf8=%E2%9C%93&q=milestone%3ARelease-0.13.6+
+
+0.13.5
+    https://github.com/killbill/killbill/issues/238
+    https://github.com/killbill/killbill/issues/274
+    https://github.com/killbill/killbill/issues/275
+    https://github.com/killbill/killbill/issues/281
+    https://github.com/killbill/killbill/issues/286
+    Update killbill-oss-parent to 0.9.15
+
+0.13.4
+    https://github.com/killbill/killbill/issues/137
+    https://github.com/killbill/killbill/issues/244
+    https://github.com/killbill/killbill/issues/257
+    https://github.com/killbill/killbill/issues/272
+    invoice: fix bug when handling full repairs
+    jaxrs: improve waiting for notifications in TestResource
+    Update killbill-oss-parent to 0.9.11
+
+0.13.3
+    https://github.com/killbill/killbill/issues/258
+    https://github.com/killbill/killbill/issues/260
+    https://github.com/killbill/killbill/issues/267
+    https://github.com/killbill/killbill/issues/268
+    https://github.com/killbill/killbill-commons/issues/9
+    Update killbill-oss-parent to 0.9.10
+    Permit empty values for Account#name and Account#email
+
+0.13.2
+    https://github.com/killbill/killbill/issues/214
+    https://github.com/killbill/killbill/issues/251
+    https://github.com/killbill/killbill/issues/261
+    Fixes in payment system
+    Bug fixes in multi-tenant support
+    Fix CHANGE_OF_PLAN plan alignment
+    Update killbill-oss-parent to 0.9.9
+
+0.13.1
+    https://github.com/killbill/killbill/issues/226
+    https://github.com/killbill/killbill/issues/233
+    https://github.com/killbill/killbill/issues/234
+    https://github.com/killbill/killbill/issues/235
+    https://github.com/killbill/killbill/issues/236
+    https://github.com/killbill/killbill/issues/245
+    Add support for invoice plugins
+    Export more fields in TaxInvoiceItem
+    Update killbill-oss-parent to 0.9.7
+
+0.12.2
+    Fix state machine flow for PENDING payments
+    Fix Guice wiring in JAX-RS
+
+0.12.1
+    Fix NPE in case of aborted payments
+    Add missing headers for CORS
+    Update killbill-platform to 0.1.1
+    Reduce size of the war
+
+0.12.0
+    Bug fixes #200 #193
+    Renaming
+    Preparation for 0.12.0
+
+0.11.13
+    Swagger integration
+    Fixes for PaymentControlApi
+    https://github.com/killbill/killbill/issues/152
+    https://github.com/killbill/killbill/issues/227
+    https://github.com/killbill/killbill/issues/198
+
+0.11.12
+    Fix issues around timezones
+    Switch to HikariCP by default
+    Rename TableName.TRANSACTIONS to TableName.PAYMENT_TRANSACTIONS
+    Update killbill-oss-parent to 0.7.30
+
+0.11.11
+    Usage api change
+    Update commons for bug fixes
+
+0.11.10
+    Payment bug fixes
+    New Janitor tasks
+    JMX properties refinment
+    Fix broken logging (war artifacts)
+    https://github.com/killbill/killbill/issues/210
+    Update killbill-oss-parent to 0.7.22
+
+0.11.9
+    payment: rework Janitor shutdown sequence
+    jdbc: integrate log4jdbc-log4j2
+    profiling: add support for JAX-RS and EhCache
+    Shiro integration bugfixes
+    Fix tests failures on H2
+    https://github.com/killbill/killbill/issues/204
+    Update killbill-oss-parent to 0.7.20
+
+0.11.8
+    Add support for profiling data
+    Harden code to fix sporadic failure in integration tests
+
+0.11.6
+    Payment subsystem (complete merge payment and direct payment, and does renaming)
+
+0.11.5
+    Extract killbill-platform
+    Implement state machines for payments
+    Merge invoice and direct payments flows
+    https://github.com/killbill/killbill/issues/170
+    https://github.com/killbill/killbill/issues/201
+    Update killbill-oss-parent to 0.7.14
+
+0.11.4
+    Upgrade JRuby to 1.7.12
+    Fix NPE in direct payment APIs for accounts without a default payment method
+
+0.11.3
+    Iteration on new direct payment APIs (unstable)
+
+0.11.2
+    Iteration on new direct payment APIs (unstable)
+    invoice: change external charges APIs to allow bulk insertion
+    osgi: introduce OSGIConfigProperties as an an osgi service to allow plugins to read system properties
+
+0.11.1
+    Introduction of new direct payment APIs (unstable)
+
+0.10.2
+    Add paymentAmount parameter to payAllInvoices API
+    Fix OSGI dependencies issue
+
+0.10.1
+    Allow configuration of EhCache by specifying a URI
+
+0.10.0
+    Merge usage branch (consumable in arrear)
+    Upgrade osgi felix framework and resolve osgi errors
+
+0.9.2
+    Add org.killbill.server.properties property
+    Add default invoice HTML template
+    Better first time experience when using the jetty-console war
+
+0.9.1
+    Update packages com.ning -> org.killbill
+
+0.8.13
+    Fix SQL query typo in unmarkPaymentMethodAsDeleted
+
+0.8.12
+    Implement bundles pagination and search APIs
+    Implement invoices search API
+    https://github.com/killbill/killbill/issues/154
+    https://github.com/killbill/killbill/issues/156
+    https://github.com/killbill/killbill/issues/159
+    JAX-RS bugfixes
+    Update killbill-oss-parent to 0.5.24
+
+0.8.11
+    [SECURITY] Fix SQL injection in search APIs
+    Fix bug when retrieving refund information from plugins
+    Add system tag definitions support to tag search
+    https://github.com/killbill/killbill/issues/100
+
+0.8.10
+    Upgrade JRuby and add support for OpenSSL in plugins
+    payment: pagination bugfix
+    Update killbill-oss-parent to 0.5.21 (DDL change)
+     - retry logic for bus and notification queues
+
+0.8.9
+    Introduce PENDING payment state for Bitcoin
+    Implement new pagination and search APIs
+    Update killbill-oss-parent to 0.5.19
+
+0.8.8
+    Add ability to update a bundle externalKey
+    Add ability to delete (mark as deleted) custom fields
+    Update killbill-oss-parent to 0.5.16
+
+0.8.7
+    DDL: remove unused paid_through_date column
+    https://github.com/killbill/killbill/issues/130
+    https://github.com/killbill/killbill/issues/149
+    Add API to retrieve deleted tags
+    Add search APIs for payments
+    Audit API optimizations
+    JDBI optimizations
+    Update killbill-oss-parent to 0.5.9
+
+0.8.6
+    Partial fix for https://github.com/killbill/killbill/issues/141
+    https://github.com/killbill/killbill/issues/143
+    https://github.com/killbill/killbill/issues/145
+    https://github.com/killbill/killbill/issues/147
+    https://github.com/killbill/killbill/issues/148
+    DDL: remove unused billing_cycle_day_utc column
+
+0.8.5
+    https://github.com/killbill/killbill/issues/134
+    https://github.com/killbill/killbill/issues/135
+    https://github.com/killbill/killbill/issues/136
+    https://github.com/killbill/killbill/issues/140
+
+0.8.4
+    Subscription base speedups
+    Fix regression in bundle timeline API
+    Fix ClassCastException in Beatrix
+    https://github.com/killbill/killbill/issues/123
+    https://github.com/killbill/killbill/issues/132
+
+0.8.3
+    Entitlement speedups
+
+0.8.2
+    Lots of subscription & entitlement bugfixes
+    https://github.com/killbill/killbill/issues/121
+    https://github.com/killbill/killbill/issues/124
+    https://github.com/killbill/killbill/issues/126
+    https://github.com/killbill/killbill/issues/128
+
+0.8.1
+    https://github.com/killbill/killbill/issues/94
+    https://github.com/killbill/killbill/issues/116
+
+0.8.0
+    Add missing audit columns in blocking_states
+
+0.7.1
+    Add support for currency conversion plugin type
+    Allow payments/refund to be processed by plugin in a different currency than the one on the account
+
+0.7.0
+    Initial support for pagination
+    Entitlement bugfixes
+
+0.5.0
+    Initial implementation of RBAC
+     - default credentials: admin/password
+    Remove analytics plugin from defaultbundles package
+    Switch to killbill-commons for locker and db testing helper
+    Lower the default number of hash iterations for the apiSecret to 200,000 down from 500,000
+     - you can override it via -Dkillbill.server.multitenant.hash_iterations
+
+0.4.0
+    Search APIs
+    Log errors during lifecycle
+    Fix Catalog endpoints
+
+0.3.6
+    Add all ISO currencies to the catalog
+    jaxrs: return properly formatted JSON in case of exception

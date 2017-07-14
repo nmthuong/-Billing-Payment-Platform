@@ -1,0 +1,116 @@
+group PaymentAttemptSqlDao: EntitySqlDao;
+
+tableName() ::= "payment_attempts"
+
+historyTableName() ::= "payment_attempt_history"
+
+
+
+tableFields(prefix) ::= <<
+  <prefix>account_id
+, <prefix>payment_method_id
+, <prefix>payment_external_key
+, <prefix>transaction_id
+, <prefix>transaction_external_key
+, <prefix>transaction_type
+, <prefix>state_name
+, <prefix>amount
+, <prefix>currency
+, <prefix>plugin_name
+, <prefix>plugin_properties
+, <prefix>created_by
+, <prefix>created_date
+, <prefix>updated_by
+, <prefix>updated_date
+>>
+
+tableValues() ::= <<
+  :accountId
+, :paymentMethodId
+, :paymentExternalKey
+, :transactionId
+, :transactionExternalKey
+, :transactionType
+, :stateName
+, :amount
+, :currency
+, :pluginName
+, :pluginProperties
+, :createdBy
+, :createdDate
+, :updatedBy
+, :updatedDate
+>>
+
+getByTransactionExternalKey() ::= <<
+select
+<allTableFields("")>
+from <tableName()>
+where transaction_external_key = :transactionExternalKey
+<andCheckSoftDeletionWithComma("")>
+<AND_CHECK_TENANT("")>
+<defaultOrderBy()>
+;
+>>
+
+getByPaymentExternalKey() ::= <<
+select
+<allTableFields("")>
+from <tableName()>
+where payment_external_key = :paymentExternalKey
+<andCheckSoftDeletionWithComma("")>
+<AND_CHECK_TENANT()>
+<defaultOrderBy()>
+;
+>>
+
+/* Does not include tenant info, global */
+getByStateNameAcrossTenants() ::= <<
+select
+<allTableFields("")>
+from <tableName()>
+where state_name = :stateName
+and created_date \< :createdBeforeDate
+<andCheckSoftDeletionWithComma("")>
+<defaultOrderBy()>
+limit :rowCount offset :offset
+;
+>>
+
+getCountByStateNameAcrossTenants() ::= <<
+select
+count(1) as count
+from <tableName()>
+where state_name = :stateName
+and created_date \< :createdBeforeDate
+<andCheckSoftDeletionWithComma("")>
+;
+>>
+
+
+updateAttempt() ::= <<
+update <tableName()>
+set state_name = :stateName
+, transaction_id = :transactionId
+, updated_by = :updatedBy
+, updated_date = :updatedDate
+where id = :id
+<AND_CHECK_TENANT()>
+;
+>>
+
+updateAttemptWithProperties() ::= <<
+update <tableName()>
+set state_name = :stateName
+, transaction_id = :transactionId
+, plugin_properties = :pluginProperties
+, updated_by = :updatedBy
+, updated_date = :updatedDate
+where id = :id
+<AND_CHECK_TENANT()>
+;
+>>
+
+
+
+

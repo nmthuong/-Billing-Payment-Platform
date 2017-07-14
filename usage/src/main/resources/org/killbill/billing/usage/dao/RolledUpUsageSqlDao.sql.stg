@@ -1,0 +1,74 @@
+group RolledUpUsageSqlDao : EntitySqlDao;
+
+tableName() ::= "rolled_up_usage"
+
+
+tableFields(prefix) ::= <<
+  <prefix>subscription_id
+, <prefix>unit_type
+, <prefix>record_date
+, <prefix>amount
+, <prefix>tracking_id
+, <prefix>created_by
+, <prefix>created_date
+>>
+
+tableValues() ::= <<
+  :subscriptionId
+, :unitType
+, :recordDate
+, :amount
+, :trackingId
+, :userName
+, :createdDate
+>>
+
+recordsWithTrackingIdExist() ::= <<
+select
+  1
+from <tableName()>
+where subscription_id = :subscriptionId
+and tracking_id = :trackingId
+<AND_CHECK_TENANT()>
+limit 1
+;
+>>
+
+getUsageForSubscription() ::= <<
+select
+  <allTableFields()>
+from <tableName()>
+where subscription_id = :subscriptionId
+and record_date >= :startDate
+and record_date \< :endDate
+and unit_type = :unitType
+<AND_CHECK_TENANT()>
+<defaultOrderBy()>
+;
+>>
+
+getAllUsageForSubscription() ::= <<
+select
+  <allTableFields()>
+from <tableName()>
+where subscription_id = :subscriptionId
+and record_date >= :startDate
+and record_date \< :endDate
+<AND_CHECK_TENANT()>
+<defaultOrderBy()>
+;
+>>
+
+getRawUsageForAccount() ::= <<
+select
+  <allTableFields()>
+from <tableName()>
+where account_record_id = :accountRecordId
+and record_date >= :startDate
+and record_date \< :endDate
+<AND_CHECK_TENANT()>
+<defaultOrderBy()>
+;
+>>
+
+

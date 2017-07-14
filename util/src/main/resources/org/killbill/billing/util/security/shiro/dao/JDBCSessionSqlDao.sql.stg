@@ -1,0 +1,50 @@
+group JDBCSessionSqlDao;
+
+read() ::= <<
+select
+  record_id
+, id
+, start_timestamp
+, last_access_time
+, timeout
+, host
+, session_data
+from sessions
+where id = :id
+;
+>>
+
+create() ::= <<
+insert into sessions (
+  id
+, start_timestamp
+, last_access_time
+, timeout
+, host
+, session_data
+) values (
+  :id
+, :startTimestamp
+, :lastAccessTime
+, :timeout
+, :host
+, :sessionData
+);
+>>
+
+update() ::= <<
+update sessions set
+  start_timestamp = :startTimestamp
+, last_access_time = :lastAccessTime
+, timeout = :timeout
+, host = :host
+, session_data = :sessionData
+where id = :id
+;
+>>
+
+delete() ::= <<
+delete from sessions
+where id = :id
+;
+>>

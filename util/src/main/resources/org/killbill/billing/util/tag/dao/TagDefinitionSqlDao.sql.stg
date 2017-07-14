@@ -1,0 +1,70 @@
+group TagDefinitionDao: EntitySqlDao;
+
+tableName() ::= "tag_definitions"
+
+andCheckSoftDeletionWithComma(prefix) ::= "and <prefix>is_active"
+
+tableFields(prefix) ::= <<
+  <prefix>name
+, <prefix>description
+, <prefix>is_active
+, <prefix>created_by
+, <prefix>created_date
+, <prefix>updated_by
+, <prefix>updated_date
+>>
+
+tableValues() ::= <<
+  :name
+, :description
+, :isActive
+, :createdBy
+, :createdDate
+, :updatedBy
+, :updatedDate
+>>
+
+accountRecordIdFieldWithComma(prefix) ::= ""
+
+accountRecordIdValueWithComma() ::= ""
+
+historyTableName() ::= "tag_definition_history"
+
+markTagDefinitionAsDeleted() ::= <<
+update <tableName()>
+set is_active = false
+where <idField("")> = :id
+<AND_CHECK_TENANT("")>
+;
+>>
+
+tagDefinitionUsageCount() ::= <<
+select
+  count(<idField("t.")>)
+from tags t
+where t.is_active
+and t.tag_definition_id = :id
+<AND_CHECK_TENANT("t.")>
+;
+>>
+
+getByName() ::= <<
+select
+  <allTableFields("t.")>
+from <tableName()> t
+where t.name = :name
+and t.is_active
+<AND_CHECK_TENANT("t.")>
+;
+>>
+
+getByIds(ids) ::= <<
+select
+  <allTableFields("t.")>
+from <tableName()> t
+where t.is_active
+and <idField("t.")> in (<ids: {id | :id_<i0>}; separator="," >)
+<AND_CHECK_TENANT("t.")>
+;
+>>
+

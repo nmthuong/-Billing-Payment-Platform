@@ -1,0 +1,168 @@
+#! /usr/bin/env bash
+
+###################################################################################
+#                                                                                 #
+#                   Copyright 2010-2012 Ning, Inc.                                #
+#                                                                                 #
+#      Ning licenses this file to you under the Apache License, version 2.0       #
+#      (the "License"); you may not use this file except in compliance with the   #
+#      License.  You may obtain a copy of the License at:                         #
+#                                                                                 #
+#          http://www.apache.org/licenses/LICENSE-2.0                             #
+#                                                                                 #
+#      Unless required by applicable law or agreed to in writing, software        #
+#      distributed under the License is distributed on an "AS IS" BASIS, WITHOUT  #
+#      WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the  #
+#      License for the specific language governing permissions and limitations    #
+#      under the License.                                                         #
+#                                                                                 #
+###################################################################################
+
+#set -x
+
+
+# Killbill server
+KILLBILL_HOST=${KILLBILL_HOST-127.0.0.1}
+KILLBILL_URL=http://${KILLBILL_HOST}:8080
+
+# Destination database
+DATABASE=${DATABASE-killbill}
+USERNAME=${USERNAME-root}
+PASSWORD=${PASSWORD-root}
+
+# Temporary directory
+TMP_DIR=$(mktemp -d)
+
+WHO=`whoami`
+
+function fill_empty_columns() {
+
+    local filename=$1
+    local tmp=${filename}.tmp
+    grep ',,' $filename > /dev/null
+    while [[ $? = 0 ]]; do
+        cat $filename | sed s/,,/,\\\\N,/ > $tmp
+        mv $tmp $filename
+        grep ',,' $filename > /dev/null
+    done
+
+    grep ',$' $filename > /dev/null
+    while [[ $? = 0 ]]; do
+        cat $filename | sed s/,$/,\\\\N/ > $tmp
+        mv $tmp $filename
+        grep ',$' $filename > /dev/null
+    done
+
+}
+
+function replace_boolean() {
+
+    local filename=$1
+    local tmp=${filename}.tmp
+
+    cat $filename | sed s/,true/,1/g > $tmp
+    mv $tmp $filename
+
+    cat $filename | sed s/true,/1,/g > $tmp
+    mv $tmp $filename
+
+    cat $filename | sed s/,false/,0/g > $tmp
+    mv $tmp $filename
+
+    cat $filename | sed s/false,/0,/g > $tmp
+    mv $tmp $filename
+}
+
+function fix_dates() {
+
+    local filename=$1
+    local tmp=${filename}.tmp
+
+    cat $filename | sed s/+0000\",/\",/g > $tmp
+    mv $tmp $filename
+}
+
+function export_data() {
+    local account_id=$1
+    curl $KILLBILL_URL/1.0/kb/export/$1 -H"X-Killbill-CreatedBy: $WHO" > $TMP_DIR/kbdump
+}
+
+function import_data() {
+    local filename=$1
+    local columns_names=$2
+    mysql --local-infile --execute="LOAD DATA LOCAL INFILE '$TMP_DIR/$filename' INTO TABLE $filename FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' IGNORE 1 LINES ($columns_names); SHOW WARNINGS" -u$USERNAME -p$PASSWORD $DATABASE
+}
+
+function sanitize_and_import() {
+    cd $TMP_DIR
+    echo "Splitting dump $1 into tables. Working dir is $TMP_DIR"
+    cat $1 | split -p '--'  --
+
+    for i in `ls x*`; do
+        # Extract table name and move temp file with that name
+        table_name=$(cat $i | head -1 | awk '{print $2}')
+        columns_names=$(cat $i | head -1 | awk '{print $3}')
+        rm -f $table_name
+        mv $i $table_name
+        echo "Importing $table_name"
+
+        # Fill empty column with '\N'
+        fill_empty_columns $table_name
+
+        replace_boolean $table_name
+
+        fix_dates $table_name
+
+        import_data $table_name $columns_names
+    done
+}
+
+# test if user is running gnu-getopt
+TEST=`getopt -o "a:" -l "action:" -- --action dump`
+if [ "$TEST" != " --action 'dump' --" ]; then
+    echo "You are not using gnu-getopt or latest getopt."
+    echo "For Mac OS X, please upgrade 'getopt' to 'gnu-getopt',"
+    echo "For Linux, please upgrade 'getopt'."
+    exit
+fi
+
+ARGS=`getopt -o "a:" -l "action:,help" -n "import-account" -- "$@"`
+eval set -- "${ARGS}"
+
+function usage() {
+    echo -n "./import-account"
+    echo -n " -a|--action <export|import>"
+    echo -n " --help this message"
+    echo
+    exit 1
+}
+
+while true; do
+  case "$1" in
+    -a|--action) ACTION=$2; shift 2;;
+    --help) usage; shift;;
+    --) shift; break;;
+  esac
+done
+
+if [ -z $ACTION ]; then
+    echo "Need to specify an action"
+    usage
+fi
+
+if [ $ACTION == "export" ]; then
+  if [ -z $1 ]; then
+      echo "Need to specify an account id"
+      usage
+  fi
+  export_data $1
+  sanitize_and_import $TMP_DIR/kbdump
+fi
+
+if [ $ACTION == "import" ]; then
+  if [ -z $1 ]; then
+      echo "Need to specify a file"
+      usage
+  fi
+  sanitize_and_import $1
+fi

@@ -1,0 +1,69 @@
+group TenantKVSqlDao: EntitySqlDao;
+
+tableName() ::= "tenant_kvs"
+
+andCheckSoftDeletionWithComma(prefix) ::= "and <prefix>is_active"
+
+tableFields(prefix) ::= <<
+  <prefix>tenant_key
+, <prefix>tenant_value
+, <prefix>is_active
+, <prefix>created_date
+, <prefix>created_by
+, <prefix>updated_date
+, <prefix>updated_by
+>>
+
+tableValues() ::= <<
+  :tenantKey
+, :tenantValue
+, :isActive
+, :createdDate
+, :createdBy
+, :updatedDate
+, :updatedBy
+>>
+
+accountRecordIdFieldWithComma(prefix) ::= ""
+
+accountRecordIdValueWithComma() ::= ""
+
+
+getTenantValueForKey() ::= <<
+select
+  <allTableFields("t.")>
+from <tableName()> t
+where t.tenant_key = :tenantKey
+and  t.is_active
+<AND_CHECK_TENANT("t.")>
+<defaultOrderBy("t.")>
+;
+>>
+
+searchTenantKeyValues() ::= <<
+select
+  <allTableFields("t.")>
+from <tableName()> t
+where t.tenant_key like :tenantKeyPrefix
+and  t.is_active
+<AND_CHECK_TENANT("t.")>
+<defaultOrderBy("t.")>
+;
+>>
+
+markTenantKeyAsDeleted() ::= <<
+update <tableName()>
+set is_active = false
+where id = :id
+<AND_CHECK_TENANT("")>
+;
+>>
+
+
+updateTenantValueKey() ::= <<
+update <tableName()>
+set tenant_value = :tenantValue
+where id = :id
+<AND_CHECK_TENANT("")>
+;
+>>

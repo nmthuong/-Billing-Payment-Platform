@@ -1,0 +1,108 @@
+group TransactionSqlDao: EntitySqlDao;
+
+tableName() ::= "payment_transactions"
+
+historyTableName() ::= "payment_transaction_history"
+
+defaultOrderBy(prefix) ::= <<
+order by <prefix>effective_date ASC, <recordIdField(prefix)> ASC
+>>
+
+tableFields(prefix) ::= <<
+  <prefix>attempt_id
+, <prefix>transaction_external_key
+, <prefix>transaction_type
+, <prefix>effective_date
+, <prefix>transaction_status
+, <prefix>amount
+, <prefix>currency
+, <prefix>processed_amount
+, <prefix>processed_currency
+, <prefix>payment_id
+, <prefix>gateway_error_code
+, <prefix>gateway_error_msg
+, <prefix>created_by
+, <prefix>created_date
+, <prefix>updated_by
+, <prefix>updated_date
+>>
+
+tableValues() ::= <<
+  :attemptId
+, :transactionExternalKey
+, :transactionType
+, :effectiveDate
+, :transactionStatus
+, :amount
+, :currency
+, :processedAmount
+, :processedCurrency
+, :paymentId
+, :gatewayErrorCode
+, :gatewayErrorMsg
+, :createdBy
+, :createdDate
+, :updatedBy
+, :updatedDate
+>>
+
+getPaymentTransactionsByExternalKey() ::= <<
+select
+<allTableFields("")>
+from <tableName()>
+where transaction_external_key = :transactionExternalKey
+<AND_CHECK_TENANT()>
+<defaultOrderBy()>
+;
+>>
+
+
+updateTransactionStatus() ::= <<
+update <tableName()>
+set transaction_status = :transactionStatus
+, attempt_id = :attemptId
+, processed_amount = :processedAmount
+, processed_currency = :processedCurrency
+, gateway_error_code = :gatewayErrorCode
+, gateway_error_msg = :gatewayErrorMsg
+, updated_by = :updatedBy
+, updated_date = :updatedDate
+where id = :id
+<AND_CHECK_TENANT()>
+;
+>>
+
+getByPaymentId() ::= <<
+select <allTableFields()>
+from <tableName()>
+where payment_id = :paymentId
+<AND_CHECK_TENANT()>
+<defaultOrderBy()>
+;
+>>
+
+
+/* Does not include AND_CHECK_TENANT() since this is a global operation */
+getByTransactionStatusPriorDateAcrossTenants(statuses) ::= <<
+select <allTableFields()>
+from <tableName()>
+where
+created_date >= :createdAfterDate
+and created_date \< :createdBeforeDate
+and transaction_status in (<statuses: {status | :status_<i0>}; separator="," >)
+<defaultOrderBy()>
+limit :rowCount offset :offset
+;
+>>
+
+getCountByTransactionStatusPriorDateAcrossTenants(statuses) ::= <<
+select
+count(1) as count
+from <tableName()>
+where
+created_date >= :createdAfterDate
+and created_date \< :createdBeforeDate
+and transaction_status in (<statuses: {status | :status_<i0>}; separator="," >)
+;
+>>
+

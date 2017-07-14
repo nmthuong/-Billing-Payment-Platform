@@ -1,0 +1,66 @@
+group TenantDaoSql: EntitySqlDao;
+
+tableName() ::= "tenants"
+
+/* Don't add api_secret and api_salt in these fields, we shouldn't need to retrieve them */
+tableFields(prefix) ::= <<
+  <prefix>external_key
+, <prefix>api_key
+, <prefix>created_date
+, <prefix>created_by
+, <prefix>updated_date
+, <prefix>updated_by
+>>
+
+tableValues() ::= <<
+  :externalKey
+, :apiKey
+, :createdDate
+, :createdBy
+, :updatedDate
+, :updatedBy
+>>
+
+/* No account_record_id field */
+accountRecordIdFieldWithComma(prefix) ::= ""
+accountRecordIdValueWithComma(prefix) ::= ""
+
+/* No tenant_record_id field */
+tenantRecordIdFieldWithComma(prefix) ::= ""
+tenantRecordIdValueWithComma(prefix) ::= ""
+CHECK_TENANT(prefix) ::= "1 = 1"
+
+/* Override default create call to include secrets */
+create() ::= <<
+insert into <tableName()> (
+  <idField()>
+, <tableFields()>
+, api_secret
+, api_salt
+)
+values (
+  <idValue()>
+, <tableValues()>
+, :apiSecret
+, :apiSalt
+)
+;
+>>
+
+getByApiKey() ::= <<
+select
+  <allTableFields("t.")>
+from <tableName()> t
+where api_key = :apiKey
+;
+>>
+
+getSecrets() ::= <<
+select
+  <allTableFields("t.")>
+, t.api_secret
+, t.api_salt
+from <tableName()> t
+where <idField("t.")> = <idValue()>
+;
+>>

@@ -1,0 +1,118 @@
+group PaymentSqlDao: EntitySqlDao;
+
+tableName() ::= "payments"
+
+historyTableName() ::= "payment_history"
+
+extraTableFieldsWithComma(prefix) ::= <<
+, <prefix>record_id as payment_number
+>>
+
+defaultOrderBy(prefix) ::= <<
+order by <prefix>created_date ASC, <recordIdField(prefix)> ASC
+>>
+
+tableFields(prefix) ::= <<
+  <prefix>account_id
+, <prefix>payment_method_id
+, <prefix>external_key
+, <prefix>state_name
+, <prefix>last_success_state_name
+, <prefix>created_by
+, <prefix>created_date
+, <prefix>updated_by
+, <prefix>updated_date
+>>
+
+tableValues() ::= <<
+  :accountId
+, :paymentMethodId
+, :externalKey
+, :stateName
+, :lastSuccessStateName
+, :createdBy
+, :createdDate
+, :updatedBy
+, :updatedDate
+>>
+
+updatePaymentForNewTransaction() ::= <<
+update <tableName()>
+set updated_by = :updatedBy
+, updated_date = :updatedDate
+where id = :id
+<AND_CHECK_TENANT()>
+;
+>>
+
+updatePaymentStateName() ::= <<
+update <tableName()>
+set state_name = :stateName
+, updated_by = :updatedBy
+, updated_date = :updatedDate
+where id = :id
+<AND_CHECK_TENANT()>
+;
+>>
+
+updateLastSuccessPaymentStateName() ::= <<
+update <tableName()>
+set state_name = :stateName
+, last_success_state_name = :lastSuccessStateName
+, updated_by = :updatedBy
+, updated_date = :updatedDate
+where id = :id
+<AND_CHECK_TENANT()>
+;
+>>
+
+getPaymentByExternalKey() ::= <<
+select
+<allTableFields("")>
+from <tableName()>
+where external_key = :externalKey
+<AND_CHECK_TENANT()>
+;
+>>
+
+searchQuery(prefix) ::= <<
+     <idField(prefix)> = :searchKey
+  or <prefix>account_id = :searchKey
+  or <prefix>payment_method_id = :searchKey
+  or <prefix>external_key like :likeSearchKey
+  or <prefix>state_name like :likeSearchKey
+>>
+
+getByPluginName() ::= <<
+select
+<allTableFields("t.")>
+from <tableName()> t
+join payment_methods pm on pm.id = t.payment_method_id
+where pm.plugin_name = :pluginName
+<AND_CHECK_TENANT("t.")>
+order by t.record_id asc
+limit :rowCount offset :offset
+;
+>>
+
+getCountByPluginName() ::= <<
+select
+  count(1) as count
+from <tableName()> t
+join payment_methods pm on pm.id = t.payment_method_id
+where pm.plugin_name = :pluginName
+<AND_CHECK_TENANT("t.")>
+;
+>>
+
+getPaymentsByStatesAcrossTenants(states) ::= <<
+select
+<allTableFields("t.")>
+from <tableName()> t
+where
+created_date >= :createdAfterDate
+and created_date \< :createdBeforeDate
+and state_name in (<states: {state | :state_<i0>}; separator="," >)
+limit :limit
+;
+>>

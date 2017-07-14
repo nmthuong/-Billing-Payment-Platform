@@ -1,0 +1,124 @@
+group PaymentMethodSqlDao: EntitySqlDao;
+
+
+
+tableName() ::= "payment_methods"
+
+historyTableName() ::= "payment_method_history"
+
+andCheckSoftDeletionWithComma(prefix) ::= "and <prefix>is_active"
+
+tableFields(prefix) ::= <<
+  <prefix>external_key
+, <prefix>account_id
+, <prefix>plugin_name
+, <prefix>is_active
+, <prefix>created_by
+, <prefix>created_date
+, <prefix>updated_by
+, <prefix>updated_date
+>>
+
+tableValues() ::= <<
+  :externalKey
+, :accountId
+, :pluginName
+, :isActive
+, :createdBy
+, :createdDate
+, :updatedBy
+, :updatedDate
+>>
+
+markPaymentMethodAsDeleted(id) ::= <<
+update <tableName()>
+set is_active = false
+, updated_by = :updatedBy
+, updated_date = :updatedDate
+where  id = :id
+<AND_CHECK_TENANT()>
+;
+>>
+
+unmarkPaymentMethodAsDeleted(id) ::= <<
+update <tableName()>
+set is_active = true
+, updated_by = :updatedBy
+, updated_date = :updatedDate
+where  id = :id
+<AND_CHECK_TENANT()>
+;
+>>
+
+getByExternalKey() ::= <<
+select <allTableFields()>
+from <tableName()>
+where external_key = :externalKey
+<andCheckSoftDeletionWithComma()>
+<AND_CHECK_TENANT()>
+;
+>>
+
+getPaymentMethodByExternalKeyIncludedDeleted() ::= <<
+select <allTableFields()>
+from <tableName()>
+where external_key = :externalKey
+<AND_CHECK_TENANT()>
+;
+>>
+
+getPaymentMethodIncludedDelete(accountId) ::= <<
+select <allTableFields()>
+from <tableName()>
+where id = :id
+<AND_CHECK_TENANT()>
+;
+>>
+
+getForAccount() ::= <<
+select
+<allTableFields()>
+from <tableName()>
+where <accountRecordIdField()> = :accountRecordId
+<andCheckSoftDeletionWithComma()>
+<AND_CHECK_TENANT()>
+;
+>>
+
+getForAccountIncludedDelete() ::= <<
+select
+<allTableFields()>
+from <tableName()>
+where <accountRecordIdField()> = :accountRecordId
+<AND_CHECK_TENANT()>
+;
+>>
+
+searchQuery(prefix) ::= <<
+     <idField(prefix)> = :searchKey
+  or <prefix>external_key like :likeSearchKey
+  or <prefix>account_id = :searchKey
+  or <prefix>plugin_name like :likeSearchKey
+>>
+
+getByPluginName() ::= <<
+select
+<allTableFields("t.")>
+from <tableName()> t
+where t.plugin_name = :pluginName
+<andCheckSoftDeletionWithComma("t.")>
+<AND_CHECK_TENANT("t.")>
+order by t.record_id
+limit :rowCount offset :offset
+;
+>>
+
+getCountByPluginName() ::= <<
+select
+  count(1) as count
+from <tableName()> t
+where t.plugin_name = :pluginName
+<andCheckSoftDeletionWithComma("t.")>
+<AND_CHECK_TENANT("t.")>
+;
+>>
